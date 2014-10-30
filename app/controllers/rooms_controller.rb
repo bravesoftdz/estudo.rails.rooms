@@ -2,11 +2,14 @@ class RoomsController < ApplicationController
   before_action :require_authentication, only: [:new, :edit, :create, :update, :destroy]
   
   def index
-    @rooms = Room.all
+    @rooms = Room.most_recent.map do |room|
+      RoomPresenter.new(room, self, false)
+    end
   end
 
   def show
-    @room = Room.find(params[:id])
+    room_model = Room.find(params[:id])
+    @room      = RoomPresenter.new(room_model, self)    
   end
 
   def new
